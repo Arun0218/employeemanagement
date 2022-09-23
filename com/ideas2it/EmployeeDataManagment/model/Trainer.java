@@ -1,3 +1,5 @@
+package com.ideas2it.EmployeeDataManagment.model;
+
 import java.util.List;
 
 /**

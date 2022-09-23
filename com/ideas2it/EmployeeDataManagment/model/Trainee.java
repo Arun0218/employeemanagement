@@ -1,3 +1,5 @@
+package com.ideas2it.EmployeeDataManagment.model;
+
  /**
  * Trainee Details.
  * @version 1.0

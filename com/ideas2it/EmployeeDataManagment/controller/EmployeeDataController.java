@@ -1,10 +1,15 @@
+package com.ideas2it.EmployeeDataManagment.controller;
+
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Scanner;
 
+import org.apache.logging.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
+
 /**
  * This Class is Manipulate EmployeeData.
- * @version 1.0
+ * @version 2.0
  * @author  Arun Kumar M.
  */
 public class EmployeeDataController {
@@ -14,6 +19,7 @@ public class EmployeeDataController {
     Trainer trainer = new Trainer();
     TraineeService traineeService = new TraineeService();
     TrainerService trainerService = new TrainerService();
+    Logger logger = LogManager.getLogger(EmployeeDataController.class);
 
     public static void main(String args[]) {
         boolean exit = true;
@@ -45,13 +51,31 @@ public class EmployeeDataController {
                     break;
 
                 default:
-                    System.out.println("*INVALID* Selection, try again!");
+                    controller.warnMessage();
             }
         }
     }
 
+    public int operation() {
+
+    boolean isValidSelection = true;
+    int operation = 1;
+
+        do {
+            try {
+                Scanner scanner = new Scanner(System.in);
+                logger.info("Enter the Operation ");
+                operation = Integer.parseInt(scanner.nextLine());
+                isValidSelection= false;
+            } catch(NumberFormatException exception){
+                logger.error("**INVALID** Entry. Enter the Valid Number ---");
+            }
+        } while(isValidSelection);
+        return operation;
+    }
+
     public int selectOperation() {
-        System.out.println("Select any one Selection by Numeric Pointers."
+        logger.info("Select any one Selection by Numeric Pointers."
                            +"\n1. Create \n2. Read"
                            + "\n3. Update \n4. Delete \n5. Exit");
         int operation = operation();
@@ -64,7 +88,7 @@ public class EmployeeDataController {
         String employeeId;
 
         do {
-            System.out.print("Enter your Employee ID: \nI");
+            logger.info("Enter your Employee ID: ");
             employeeId = scanner.nextLine();
             if(ValidationUtil.isValidDetail(ValidationUtil.employeeId, employeeId)) {
                 if(traineeService.isPhoneNumberAlreadyExist(employeeId) &&
@@ -74,7 +98,7 @@ public class EmployeeDataController {
                         try {
                             throw new ValueAlreadyExist("Input Already Exist ");
                         } catch (ValueAlreadyExist error) {
-                            System.out.println(error);
+                            logger.error("Input Already Exist ");
                         }
                     }
                 } else {
@@ -82,7 +106,7 @@ public class EmployeeDataController {
                         throw new InvalidInputException("In-valid Entry,"
                                                         + "Enter the Valid ");
                     } catch (InvalidInputException error) {
-                        System.out.println(error);
+                        logger.error(error + "\n");
                     }
                 }
         } while (isValid);
@@ -94,7 +118,7 @@ public class EmployeeDataController {
         String name;
 
         do {
-            System.out.println("Enter your Name: ");
+            logger.info("Enter your Name: ");
             name = scanner.nextLine();
             if(ValidationUtil.isValidDetail(ValidationUtil.namePattern, name)) {
                 isValid = false;
@@ -103,7 +127,7 @@ public class EmployeeDataController {
                     throw new InvalidInputException("In-valid Entry,"
                                                     + "Enter the Valid ");
                 } catch(InvalidInputException error) {
-                   System.out.println(error);
+                   logger.error(error + "\n");
                 }
             }
         } while (isValid);
@@ -115,7 +139,7 @@ public class EmployeeDataController {
         String phoneNumber;
 
         do {
-            System.out.println("Enter your PhoneNumber: ");
+            logger.info("Enter your PhoneNumber: ");
             phoneNumber = scanner.nextLine();
                 if (ValidationUtil.isValidDetail(ValidationUtil.phoneNumberPattern, phoneNumber)) {
                     if(traineeService.isPhoneNumberAlreadyExist(phoneNumber) &&
@@ -125,7 +149,7 @@ public class EmployeeDataController {
                         try {
                             throw new ValueAlreadyExist("Input Already Exist ");
                         } catch (ValueAlreadyExist error) {
-                            System.out.println(error);
+                            logger.error("Input Already Exist ");
                         }
                     }
                 } else {
@@ -133,7 +157,7 @@ public class EmployeeDataController {
                         throw new InvalidInputException("In-valid Entry,"
                                                         + "Enter the Valid ");
                     } catch (InvalidInputException error) {
-                        System.out.println(error);
+                        logger.error(error + "\n");
                     }
                 }
         } while (isValid);
@@ -146,7 +170,7 @@ public class EmployeeDataController {
         String email;
 
         do {
-            System.out.println("Enter your Mail: ");
+            logger.info("Enter your Mail: ");
             email = scanner.nextLine();
             if(ValidationUtil.isValidDetail(ValidationUtil.emailPattern, email)) {
                 if(traineeService.isPhoneNumberAlreadyExist(email) &&
@@ -156,7 +180,7 @@ public class EmployeeDataController {
                     try {
                         throw new ValueAlreadyExist("Input Already Exist ");
                     } catch (ValueAlreadyExist error) {
-                        System.out.println(error);
+                        logger.error("Input Already Exist ");
                     }
                 }
             } else {
@@ -164,7 +188,7 @@ public class EmployeeDataController {
                     throw new InvalidInputException("In-valid Entry,"
                                                     + "Enter the Valid ");
                 } catch (InvalidInputException error) {
-                    System.out.println(error);
+                    logger.error(error + "\n");
                 }
             }
         } while (isValid);
@@ -176,7 +200,7 @@ public class EmployeeDataController {
         String bloodGroup;
 
         do {
-            System.out.println("Enter your Blood Group: ");
+            logger.info("Enter your Blood Group: ");
             bloodGroup = scanner.nextLine();
             if(ValidationUtil.isValidDetail(ValidationUtil.bloodGroupPattern, bloodGroup)) {
                 exit = false;
@@ -185,7 +209,7 @@ public class EmployeeDataController {
                     throw new InvalidInputException("In-valid Entry,"
                                                     + "Enter the Valid ");
                 } catch (InvalidInputException error) {
-                    System.out.println(error);
+                    logger.error(error + "\n");
                 }
             }
         } while (exit);
@@ -195,7 +219,7 @@ public class EmployeeDataController {
     public void addDetails() {
 
         do {
-            System.out.println("Select \n1. Trainer. \n2. Trainee."
+            logger.info("Select \n1. Trainer. \n2. Trainee."
                                + "\n3. Back-To-Main-Menu.");
             select = operation();
 
@@ -209,11 +233,11 @@ public class EmployeeDataController {
                     break;
 
                 case 3:
-                    System.out.println("Back-to-Main-Menu");
+                    logger.info("Back-to-Main-Menu");
                     break;
 
                 default:
-                    System.out.println("**INVALID** Selection, try again!");
+                    warnMessage();
             }
         } while(select != 3);
     }
@@ -227,9 +251,9 @@ public class EmployeeDataController {
                                           assignTrainee());
             trainerService.addTrainerDetail(trainer);
         } catch (InvalidInputException error) {
-            System.out.println("In-valid Entry, Enter the Valid ");
+            logger.error("In-valid Entry, Enter the Valid \n");
         } catch (ValueAlreadyExist error) {
-            System.out.println("Phone Number Already Exist ");
+            logger.error("Phone Number Already Exist ");
         }
     }
 
@@ -241,21 +265,21 @@ public class EmployeeDataController {
                                           getBloodGroup());
             traineeService.addTraineeDetail(trainee);
         } catch (InvalidInputException error) {
-            System.out.println("In-valid Entry, Enter the Valid ");
+            logger.error("In-valid Entry, Enter the Valid ");
         } catch (ValueAlreadyExist error) {
-            System.out.println("Phone Number Already Exist ");
+            logger.error("Phone Number Already Exist ");
         }
     }
 
     public List<Trainee> assignTrainee() {
-        System.out.print("Enter the Trainee ID: \nI");
+        logger.info("Enter the Trainee ID: ");
         String traineeId = scanner.nextLine();
         List<Trainee> traineeList = new ArrayList<Trainee>();;
 
         if (traineeService.checkTraineeById(traineeId)) {
             trainee = traineeService.getTraineeDetailById(traineeId);
         } else {
-            System.out.println("No Details Found___");
+            logger.info("No Details Found___");
             do {
                 try {
                     assignTraineeSelection();
@@ -268,7 +292,7 @@ public class EmployeeDataController {
 
                         case 2:
                             if (traineeService.checkTraineeById(traineeId)) {
-                                System.out.println("No Details Found___");
+                                logger.info("No Details Found___");
                             } else {
                                 traineeList.add(traineeService
                                                 .getTraineeDetailById(traineeId));
@@ -276,14 +300,14 @@ public class EmployeeDataController {
                             break;
 
                         case 3:
-                            System.out.println("Assign Trainee Later");
+                            logger.info("Assign Trainee Later");
                             break;
 
                         default:
-                            System.out.println("*INVALID* Selection, try again!");
+                            warnMessage();
                     }
                 } catch(NumberFormatException exception) {
-                    System.out.println("Enter the Valid Selection ---");
+                    logger.error("Enter the Valid Selection ---");
                 }
             } while(select != 3);
         }
@@ -291,7 +315,7 @@ public class EmployeeDataController {
     }
 
     public int assignTraineeSelection() {
-        System.out.println(" Select to assign the trainee:" 
+        logger.info(" Select to assign the trainee:" 
                            + "\n1--Create and Assign Trainee."
                            + "\n2--Assign Already Enrolled Trainee."
                            + "\n3--Assign Trainee Later.");
@@ -301,17 +325,17 @@ public class EmployeeDataController {
 
     public Trainee createNewTraineeDetail(String traineeId) {
         try {
-            System.out.println("Create your Trainee Details");
-            System.out.println("Enter the Trainee ID: \nI");
+            logger.info("Create your Trainee Details");
+            logger.info("Enter the Trainee ID: ");
             traineeId = scanner.nextLine();
             Trainee trainee = new Trainee(traineeId, getName(), 
                                           getPhoneNumber(), getEmail(),
                                           getBloodGroup());
             traineeService.addTraineeDetail(trainee);
         } catch (InvalidInputException error) {
-            System.out.println("In-valid Entry, Enter the Valid ");
+            logger.error("In-valid Entry, Enter the Valid ");
         } catch (ValueAlreadyExist error) {
-            System.out.println("Phone Number Already Exist ");
+            logger.error("Phone Number Already Exist ");
         }
         return trainee;
     }
@@ -319,14 +343,14 @@ public class EmployeeDataController {
     public void readDetails() {
 
         do {
-            System.out.println("Select to Read: \n1. Trainer." 
+            logger.info("Select to Read: \n1. Trainer." 
                                + "\n2. Trainee. \n3.Back-To-Main-Menu.");
             select = operation();
 
             switch (select) {
                 case 1:
                     if (trainerService.isTrainerListIsEmpty()) {
-                        System.out.println("No Employee Details to Display.");
+                        logger.info("No Employee Details to Display.");
                     } else {
                         readTrainerDetail();
                     }
@@ -334,25 +358,25 @@ public class EmployeeDataController {
 
                 case 2:
                     if (traineeService.isTraineeListIsEmpty()) {
-                        System.out.println("No Employee Details to Display.");
+                        logger.info("No Employee Details to Display.");
                     } else {
                         readTraineeDetail();
                     }
                     break;
 
                 case 3:
-                    System.out.println("Back-to-Main-Menu");
+                    logger.info("Back-to-Main-Menu");
                     break;
 
                 default:
-                    System.out.println("**INVALID** Selection, try again!");
+                    warnMessage();
             }
         } while(select !=3);
     }
 
     public int readOperation() {
-        System.out.println("Trainer Details \3 ");
-        System.out.println("Select any one Operation by Numeric Pointers."
+        logger.info("Trainer Details \3 ");
+        logger.info("Select any one Operation by Numeric Pointers."
                            + "\n1. Read All. \n2. Read by ID."
                            + "\n9. Back-to-Main-Menu. \n\t\t\t0-Exit. ");
         int operation = operation();
@@ -367,18 +391,18 @@ public class EmployeeDataController {
                 String trainees = traineeService
                                       .diplayAllTraineeDetails()
                                           .toString();
-                System.out.println(traineeService
+                logger.info(traineeService
                                        .getTraineeDetails(trainees));
                 break;
 
             case 2:
-                System.out.println("Enter the Trainee ID: ");
+                logger.info("Enter the Trainee ID: ");
                 String traineeId = scanner.nextLine();
                 if (traineeService.checkTraineeById(traineeId)) {
-                    System.out.println(traineeService
-                                           .getTraineeDetailById(traineeId));
+                    logger.info(traineeService
+                                  .getTraineeDetailById(traineeId));
                 } else {
-                    System.out.println("Employee Not Fount,"
+                    logger.info("Employee Not Fount,"
                                        + "Enter valid ID");
                 }
                 break;
@@ -392,7 +416,7 @@ public class EmployeeDataController {
                 break;
 
             default:
-                System.out.println("**INVALID** Selection, try again!");
+                warnMessage();
         }
     }
 
@@ -406,25 +430,25 @@ public class EmployeeDataController {
                     String trainers = trainerService
                                           .diplayAllTrainerDetails()
                                               .toString();
-                    System.out.println(trainerService
+                    logger.info(trainerService
                                            .getTrainerDetails(trainers));
                     break;
 
                 case 2:
-                    System.out.println("Enter the Trainer ID: ");
+                    logger.info("Enter the Trainer ID: ");
                     String trainerId = scanner.nextLine();
                     if(trainerService.checkTrainerById(trainerId)) {
-                        System.out.println(trainerService
+                        logger.info(trainerService
                                            .getTrainerDetailById(trainerId));
                         String trainees = trainerService
                                               .getTrainerDetailById(trainerId)
                                               .getTrainee().toString();
                         if(trainees != null) {
-                            System.out.println(trainerService
+                            logger.info(trainerService
                                                .getTraineeDetails(trainees));
                         }
                     } else {
-                        System.out.println("Employee Not Fount,"
+                        logger.info("Employee Not Fount,"
                                            + "Enter valid ID");
                     }
                     break;
@@ -438,20 +462,20 @@ public class EmployeeDataController {
                     break;
 
                 default:
-                    System.out.println("**INVALID** Selection, try again!");
+                    warnMessage();
             }
         }
     }
 
 
     public void updateDetails() {
-        System.out.println("Select \n1. Trainer. \n2. Trainee.");
+        logger.info("Select \n1. Trainer. \n2. Trainee.");
         select = operation();
 
         switch (select) {
             case 1:
                 if (trainerService.isTrainerListIsEmpty()) {
-                    System.out.println("No Employee Details to update.");
+                    logger.info("No Employee Details to update.");
                 } else {
                     trainerService.updateTrainer(updateTrainerDetail());
                 }
@@ -459,19 +483,19 @@ public class EmployeeDataController {
 
             case 2:
                 if (traineeService.isTraineeListIsEmpty()) {
-                    System.out.println("No Employee Details to update.");
+                    logger.info("No Employee Details to update.");
                 } else {
                     traineeService.updateTrainee(updateTraineeDetail());
                 }
                 break;
 
             default:
-                System.out.println("**INVALID** Selection, try again!");
+                warnMessage();
         }
     }
 
     public int updateTraineeOperation() {
-        System.out.println("Enter The Field to Update: \n1-Name."
+        logger.info("Enter The Field to Update: \n1-Name."
                             + "\n2-PhoneNumber. \n3-Email."
                             + "\n4-BloodGroup. \n9-Back. \n0-Exit");
         int operation = operation();
@@ -480,7 +504,7 @@ public class EmployeeDataController {
 
     public Trainee updateTraineeDetail() {
         boolean entry = true;
-        System.out.println("Enter the Trainee ID: ");
+        logger.info("Enter the Trainee ID: ");
         String traineeId = scanner.nextLine();
         trainee = traineeService.getTraineeDetailById(traineeId);
 
@@ -517,19 +541,19 @@ public class EmployeeDataController {
                         break;
 
                     default:
-                        System.out.println("*INVALID* Selection, try again!");
+                        warnMessage();
                 }
             } catch (InvalidInputException error) {
-                System.out.println("In-valid Entry, Enter the Valid ");
+                logger.error("In-valid Entry, Enter the Valid ");
             } catch (ValueAlreadyExist error) {
-                System.out.println("Phone Number Already Exist ");
+                logger.error("Phone Number Already Exist ");
             }
         }        
         return trainee;
     }
 
     public int updateTrainerOperation() {
-        System.out.println("Enter The Field to Update: \n1-Name."
+        logger.info("Enter The Field to Update: \n1-Name."
                             + "\n2-PhoneNumber. \n3-Email."
                             + "\n4-BloodGroup. \n5-Assign Trainee."
                             + "\n9-Back. \n0-Exit");
@@ -539,7 +563,7 @@ public class EmployeeDataController {
 
     public Trainer updateTrainerDetail() {
         boolean entry = true;
-        System.out.println("Enter the Trainer ID: ");
+        logger.info("Enter the Trainer ID: ");
         String trainerId = scanner.nextLine();
         trainer = trainerService.getTrainerDetailById(trainerId);
 
@@ -580,12 +604,12 @@ public class EmployeeDataController {
                         break;
 
                     default:
-                        System.out.println("*INVALID* Selection, try again!");
+                        warnMessage();
                 }
             } catch (InvalidInputException error) {
-                System.out.println("In-valid Entry, Enter the Valid ");
+                logger.error("In-valid Entry, Enter the Valid ");
             } catch (ValueAlreadyExist error) {
-                System.out.println("Phone Number Already Exist ");
+                logger.error("Phone Number Already Exist ");
             }
         }
         return trainer;
@@ -593,13 +617,13 @@ public class EmployeeDataController {
 
     public void deleteDetails() {
         try {
-            System.out.println("Select \n1. Trainer. \n2. Trainee.");
+            logger.info("Select \n1. Trainer. \n2. Trainee.");
             select = operation();
 
             switch (select) {
                 case 1:
                     if (trainerService.isTrainerListIsEmpty()) {
-                        System.out.println("No Employee Details to Delete.");
+                        logger.info("No Employee Details to Delete.");
                     } else {
                         deleteTrainerDetail();
                     }
@@ -607,17 +631,17 @@ public class EmployeeDataController {
 
                 case 2:
                     if (traineeService.isTraineeListIsEmpty()) {
-                        System.out.println("No Employee Details to Delete.");
+                        logger.info("No Employee Details to Delete.");
                     } else {
                         deleteTraineeDetail();
                     }
                     break;
 
                 default:
-                    System.out.println("**INVALID** Selection, try again!");
+                    warnMessage();
             }
         } catch(NumberFormatException exception) {
-            System.out.println("Enter the Valid Selection ---");
+            logger.error("**INVALID** Selection. Enter the Valid Selection---");
         }
     }
 
@@ -631,13 +655,13 @@ public class EmployeeDataController {
                     break;
 
                 case 2:
-                    System.out.println("Enter the Trainer ID: ");
+                    logger.info("Enter the Trainer ID: ");
                     String trainerId = scanner.nextLine();
                     trainerService.deleteTrainerById(trainerId);
                     break;
 
                 case 9:
-                    System.out.println("Back-to-Main-Menu.");
+                    logger.info("Back-to-Main-Menu.");
                     break;
 
                 case 0:
@@ -645,7 +669,7 @@ public class EmployeeDataController {
                     break;
 
                 default:
-                    System.out.println("**INVALID** Selection, try again!");
+                    warnMessage();
             }
         } while(select != 9);
     }
@@ -657,17 +681,17 @@ public class EmployeeDataController {
             switch(select) {
                 case 1:
                     traineeService.deleteAllTrainee();
-                    System.out.println("All Trainee Details Deleted.");
+                    logger.info("All Trainee Details Deleted.");
                     break;
 
                 case 2:
-                    System.out.println("Enter Ther Trainee ID: ");
+                    logger.info("Enter Ther Trainee ID: ");
                     String traineeId = scanner.nextLine();
                     traineeService.deleteTraineeById(traineeId);
                     break;
 
                 case 9:
-                    System.out.println("Back-to-Main-Menu.");
+                    logger.info("Back-to-Main-Menu.");
                     break;
 
                 case 0:
@@ -675,32 +699,21 @@ public class EmployeeDataController {
                     break;
 
                 default:
-                    System.out.println("**INVALID** Selection, try again!");
+                    warnMessage();
             }
         } while(select != 9);
     }
 
     public int deleteOperation() {
-        System.out.println("Enter The Selection: \n1. Delete All."
+        logger.info("Enter The Selection: \n1. Delete All."
                            + "\n2. Delete by ID. \n9. Back-to-Main-Menu."
                            + "\t\t\t0-Exit.");
         int operation = operation();
         return operation;
     }
 
-    public int operation() {
+    public void warnMessage() {
 
-    boolean isValidSelection = false;
-    int operation = 0;
-
-        do {
-            try {
-                Scanner scanner = new Scanner(System.in);
-                operation = Integer.parseInt(scanner.nextLine());
-            } catch(NumberFormatException exception){
-                System.out.println("Enter the Valid Number ---");
-            }
-        } while(isValidSelection);
-        return operation;
+        logger.warn("*INVALID* Number Selected, try again!");
     }
 }

@@ -1,3 +1,6 @@
+package com.ideas2it.EmployeeDataManagment.service;
+
+import com.DataManagment.model.Trainer;
 import java.util.List;
 
 public class TrainerService {
