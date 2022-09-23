@@ -1,5 +1,14 @@
 package com.ideas2it.EmployeeDataManagment.controller;
 
+import com.ideas2it.EmployeeDataManagment.exception.CustomException;
+import com.ideas2it.EmployeeDataManagment.dao.TraineeDAO;
+import com.ideas2it.EmployeeDataManagment.dao.TrainerDAO;
+import com.ideas2it.EmployeeDataManagment.model.Trainee;
+import com.ideas2it.EmployeeDataManagment.model.Trainer;
+import com.ideas2it.EmployeeDataManagment.service.TraineeService;
+import com.ideas2it.EmployeeDataManagment.service.TrainerService;
+import com.ideas2it.EmployeeDataManagment.util.ValidationUtil;
+
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Scanner;
@@ -68,7 +77,7 @@ public class EmployeeDataController {
                 operation = Integer.parseInt(scanner.nextLine());
                 isValidSelection= false;
             } catch(NumberFormatException exception){
-                logger.error("**INVALID** Entry. Enter the Valid Number ---");
+                logger.error("**INVALID** Entry. Enter the Number ---");
             }
         } while(isValidSelection);
         return operation;
@@ -83,7 +92,8 @@ public class EmployeeDataController {
     }
 
 
-    public String getID() {
+    public String getID() throws CustomException.InvalidInputException,
+                 CustomException.ValueExistException {
         boolean isValid = true;
         String employeeId;
 
@@ -96,24 +106,24 @@ public class EmployeeDataController {
                     isValid = false;
                     } else {
                         try {
-                            throw new ValueAlreadyExist("Input Already Exist ");
-                        } catch (ValueAlreadyExist error) {
-                            logger.error("Input Already Exist ");
+                            throw new CustomException.ValueExistException("Employee-ID Already Exist ");
+                        } catch (CustomException.ValueExistException error) {
+                            logger.error(error);
                         }
                     }
                 } else {
                     try {
-                        throw new InvalidInputException("In-valid Entry,"
-                                                        + "Enter the Valid ");
-                    } catch (InvalidInputException error) {
-                        logger.error(error + "\n");
+                        throw new CustomException.InvalidInputException("In-valid Entry,"
+                                                        + "Enter the Valid Employee-ID ");
+                    } catch (CustomException.InvalidInputException error) {
+                        logger.error(error);
                     }
                 }
         } while (isValid);
         return employeeId;
     }
 
-    public String getName() throws InvalidInputException{
+    public String getName() throws CustomException.InvalidInputException {
         boolean isValid = true;
         String name;
 
@@ -124,17 +134,18 @@ public class EmployeeDataController {
                 isValid = false;
             } else {
                 try {
-                    throw new InvalidInputException("In-valid Entry,"
-                                                    + "Enter the Valid ");
-                } catch(InvalidInputException error) {
-                   logger.error(error + "\n");
+                    throw new CustomException.InvalidInputException("In-valid Entry,"
+                                                    + "Enter the Valid Name");
+                } catch(CustomException.InvalidInputException error) {
+                   logger.error(error);
                 }
             }
         } while (isValid);
         return name;
     }
 
-    public String getPhoneNumber() throws InvalidInputException, ValueAlreadyExist{
+    public String getPhoneNumber() throws CustomException.InvalidInputException,
+                 CustomException.ValueExistException {
         boolean isValid = true;
         String phoneNumber;
 
@@ -147,17 +158,17 @@ public class EmployeeDataController {
                         isValid = false;
                     } else {
                         try {
-                            throw new ValueAlreadyExist("Input Already Exist ");
-                        } catch (ValueAlreadyExist error) {
-                            logger.error("Input Already Exist ");
+                            throw new CustomException.ValueExistException("Phone Number Already Exist ");
+                        } catch (CustomException.ValueExistException error) {
+                            logger.error(error);
                         }
                     }
                 } else {
                     try {
-                        throw new InvalidInputException("In-valid Entry,"
-                                                        + "Enter the Valid ");
-                    } catch (InvalidInputException error) {
-                        logger.error(error + "\n");
+                        throw new CustomException.InvalidInputException("In-valid Entry,"
+                                                        + "Enter the Valid Phone Number");
+                    } catch (CustomException.InvalidInputException error) {
+                        logger.error(error);
                     }
                 }
         } while (isValid);
@@ -165,7 +176,8 @@ public class EmployeeDataController {
         return phoneNumber;
     }
 
-    public String getEmail() throws InvalidInputException, ValueAlreadyExist{
+    public String getEmail() throws CustomException.InvalidInputException,
+                 CustomException.ValueExistException {
         boolean isValid = true;
         String email;
 
@@ -178,38 +190,40 @@ public class EmployeeDataController {
                     isValid = false;
                 } else {
                     try {
-                        throw new ValueAlreadyExist("Input Already Exist ");
-                    } catch (ValueAlreadyExist error) {
-                        logger.error("Input Already Exist ");
+                        throw new CustomException.ValueExistException("Email-ID Already Exist ");
+                    } catch (CustomException.ValueExistException error) {
+                        logger.error(error);
                     }
                 }
             } else {
                 try {
-                    throw new InvalidInputException("In-valid Entry,"
-                                                    + "Enter the Valid ");
-                } catch (InvalidInputException error) {
-                    logger.error(error + "\n");
+                    throw new CustomException.InvalidInputException("In-valid Entry,"
+                                                    + "Enter the Valid Mail-ID");
+                } catch (CustomException.InvalidInputException error) {
+                    logger.error(error);
                 }
             }
         } while (isValid);
         return email;
     }
 
-    public String getBloodGroup() {
+    public String getBloodGroup() throws CustomException.InvalidInputException,
+                 CustomException.ValueExistException {
         boolean exit = true;
         String bloodGroup;
 
         do {
             logger.info("Enter your Blood Group: ");
             bloodGroup = scanner.nextLine();
-            if(ValidationUtil.isValidDetail(ValidationUtil.bloodGroupPattern, bloodGroup)) {
+            if(ValidationUtil.isValidDetail(ValidationUtil.bloodGroupPattern,
+                                            bloodGroup)) {
                 exit = false;
             } else {
                 try {
-                    throw new InvalidInputException("In-valid Entry,"
-                                                    + "Enter the Valid ");
-                } catch (InvalidInputException error) {
-                    logger.error(error + "\n");
+                    throw new CustomException.InvalidInputException("In-valid Entry,"
+                                                    + "Enter the Valid BloodGroup");
+                } catch (CustomException.InvalidInputException error) {
+                    logger.error(error);
                 }
             }
         } while (exit);
@@ -250,9 +264,9 @@ public class EmployeeDataController {
                                           getBloodGroup(),
                                           assignTrainee());
             trainerService.addTrainerDetail(trainer);
-        } catch (InvalidInputException error) {
+        } catch (CustomException.InvalidInputException error) {
             logger.error("In-valid Entry, Enter the Valid \n");
-        } catch (ValueAlreadyExist error) {
+        } catch (CustomException.ValueExistException error) {
             logger.error("Phone Number Already Exist ");
         }
     }
@@ -264,9 +278,9 @@ public class EmployeeDataController {
                                           getPhoneNumber(), getEmail(),
                                           getBloodGroup());
             traineeService.addTraineeDetail(trainee);
-        } catch (InvalidInputException error) {
+        } catch (CustomException.InvalidInputException error) {
             logger.error("In-valid Entry, Enter the Valid ");
-        } catch (ValueAlreadyExist error) {
+        } catch (CustomException.ValueExistException error) {
             logger.error("Phone Number Already Exist ");
         }
     }
@@ -332,9 +346,9 @@ public class EmployeeDataController {
                                           getPhoneNumber(), getEmail(),
                                           getBloodGroup());
             traineeService.addTraineeDetail(trainee);
-        } catch (InvalidInputException error) {
+        } catch (CustomException.InvalidInputException error) {
             logger.error("In-valid Entry, Enter the Valid ");
-        } catch (ValueAlreadyExist error) {
+        } catch (CustomException.ValueExistException error) {
             logger.error("Phone Number Already Exist ");
         }
         return trainee;
@@ -543,9 +557,9 @@ public class EmployeeDataController {
                     default:
                         warnMessage();
                 }
-            } catch (InvalidInputException error) {
+            } catch (CustomException.InvalidInputException error) {
                 logger.error("In-valid Entry, Enter the Valid ");
-            } catch (ValueAlreadyExist error) {
+            } catch (CustomException.ValueExistException error) {
                 logger.error("Phone Number Already Exist ");
             }
         }        
@@ -606,9 +620,9 @@ public class EmployeeDataController {
                     default:
                         warnMessage();
                 }
-            } catch (InvalidInputException error) {
+            } catch (CustomException.InvalidInputException error) {
                 logger.error("In-valid Entry, Enter the Valid ");
-            } catch (ValueAlreadyExist error) {
+            } catch (CustomException.ValueExistException error) {
                 logger.error("Phone Number Already Exist ");
             }
         }

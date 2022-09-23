@@ -10,11 +10,11 @@ import java.util.regex.Pattern;
  */
 public class ValidationUtil {
 
-    static String employeeId = "[1-9]+[0-9]*";
-    static String namePattern = "([A-Za-z]+)[ ]?([A-Za-z]+)[ ]?([A-Za-z]*)";
-    static String phoneNumberPattern = "[6-9][0-9]{9}";
-    static String emailPattern = "[a-z0-9_\\.]{8,22}+[@]{1}[a-z]+[\\.]{1}[a-z]{2,3}";
-    static String bloodGroupPattern = "(([ABO]|([A][B]))[+-])";
+    public static String employeeId = "[1-9]+[0-9]*";
+    public static String namePattern = "([A-Za-z]+)[ ]?([A-Za-z]+)[ ]?([A-Za-z]*)";
+    public static String phoneNumberPattern = "[6-9][0-9]{9}";
+    public static String emailPattern = "[a-z0-9_\\.]{8,22}+[@]{1}[a-z]+[\\.]{1}[a-z]{2,3}";
+    public static String bloodGroupPattern = "(([ABO]|([A][B]))[+-])";
 
     public static boolean isValidDetail(String pattern, String fieldValue) {	
 

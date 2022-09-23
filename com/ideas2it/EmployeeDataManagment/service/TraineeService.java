@@ -1,5 +1,8 @@
 package com.ideas2it.EmployeeDataManagment.service;
 
+import com.ideas2it.EmployeeDataManagment.dao.TraineeDAO;
+import com.ideas2it.EmployeeDataManagment.model.Trainee;
+
 import java.util.List;
 
 public class TraineeService {

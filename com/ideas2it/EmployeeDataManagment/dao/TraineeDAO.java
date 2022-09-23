@@ -1,10 +1,12 @@
 package com.ideas2it.EmployeeDataManagment.dao;
 
+import com.ideas2it.EmployeeDataManagment.model.Trainee;
+
 import java.util.ArrayList;
 import java.util.List;
 
 public class TraineeDAO {
-    List<Trainee> traineeDetails = new ArrayList<Trainee>();
+    public List<Trainee> traineeDetails = new ArrayList<Trainee>();
 
     public void addTraineeDetails(Trainee trainee) {
 

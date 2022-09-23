@@ -1,6 +1,10 @@
 package com.ideas2it.EmployeeDataManagment.service;
 
-import com.DataManagment.model.Trainer;
+import com.ideas2it.EmployeeDataManagment.dao.TraineeDAO;
+import com.ideas2it.EmployeeDataManagment.dao.TrainerDAO;
+import com.ideas2it.EmployeeDataManagment.model.Trainee;
+import com.ideas2it.EmployeeDataManagment.model.Trainer;
+
 import java.util.List;
 
 public class TrainerService {

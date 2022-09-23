@@ -1,11 +1,13 @@
 package com.ideas2it.EmployeeDataManagment.dao;
 
+import com.ideas2it.EmployeeDataManagment.model.Trainer;
+
 import java.util.ArrayList;
 import java.util.List;
 
 public class TrainerDAO {
 
-    List<Trainer> trainerDetails = new ArrayList<Trainer>();
+    public List<Trainer> trainerDetails = new ArrayList<Trainer>();
 
     public void addTrainerDetails(Trainer trainer) {
 
