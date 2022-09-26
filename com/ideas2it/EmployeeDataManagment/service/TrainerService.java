@@ -5,6 +5,9 @@ import com.ideas2it.EmployeeDataManagment.dao.TrainerDAO;
 import com.ideas2it.EmployeeDataManagment.model.Trainee;
 import com.ideas2it.EmployeeDataManagment.model.Trainer;
 
+import java.time.format.DateTimeParseException;
+import java.time.LocalDate;
+import java.time.Period;
 import java.util.List;
 
 public class TrainerService {
@@ -16,24 +19,24 @@ public class TrainerService {
         return trainerDAO.trainerDetails.isEmpty();
     }
 
-    public boolean isPhoneNumberAlreadyExist(String phoneNumber) {
+    public boolean isPhoneNumberAlreadyExist(long phoneNumber) {
 
         boolean isExist = true;
         for(int index = 0; index < trainerDAO.trainerDetails.size(); index++) {
             if(trainerDAO.trainerDetails.get(index).getPhoneNumber()
-                   .equals(phoneNumber)) {
+                   == phoneNumber) {
                 isExist = false;
             }
         }
         return isExist;
     }
 
-    public boolean isEmployeeIdAlreadyExist(String employeeId) {
+    public boolean isEmployeeIdAlreadyExist(int employeeId) {
 
         boolean isExist = true;
         for(int index = 0; index < trainerDAO.trainerDetails.size(); index++) {
             if(trainerDAO.trainerDetails.get(index).getID()
-                   .equals(employeeId)) {
+                   == employeeId) {
                 isExist = false;
             }
         }
@@ -52,6 +55,32 @@ public class TrainerService {
         return isExist;
     }
 
+    public boolean isValidDateOfBirth(LocalDate dateOfBirth) {
+
+        int age;
+        boolean isValid = false;
+
+        try {
+            age = getAge(dateOfBirth);
+            if((age > 20) && (age < 60)) {
+                isValid = true;
+            }
+        } catch (DateTimeParseException dateException) {
+            isValid = false;
+        }
+        return isValid;
+    }
+
+    public int getAge(LocalDate dateOfBirth) {
+
+        int age = 0;
+        LocalDate currentDate = LocalDate.now();
+        if((dateOfBirth != null) && (currentDate != null)) {
+            age = Period.between(dateOfBirth, currentDate).getYears();
+        } 
+        return age;
+    }
+
     public void addTrainerDetail(Trainer trainer) {
 
         trainerDAO.addTrainerDetails(trainer);
@@ -59,16 +88,16 @@ public class TrainerService {
 
     public List<Trainer> diplayAllTrainerDetails() {
 
-    return trainerDAO.diplayAllTrainerDetails();
+        return trainerDAO.diplayAllTrainerDetails();
     }    
 
-    public boolean checkTrainerById(String trainerId) {
+    public boolean checkTrainerById(int trainerId) {
 
         boolean isValid = false;
 
         for(int index = 0; index < trainerDAO.trainerDetails.size(); index++) {
             if (trainerDAO.trainerDetails.get(index).getID()
-                .equals(trainerId)) {
+                == trainerId) {
                 isValid = true;
             }
         }
@@ -83,12 +112,13 @@ public class TrainerService {
         return trainees;
     }
 
-    public Trainer getTrainerDetailById(String trainerId) {
+    public Trainer getTrainerDetailById(int trainerId) {
+
         Trainer trainer = new Trainer();
 
         for(int index = 0; index < trainerDAO.trainerDetails.size(); index++) {
             if(trainerDAO.trainerDetails.get(index).getID()
-               .equals(trainerId)) {
+               == trainerId) {
                 trainer = trainerDAO.trainerDetails.get(index);
             }
         }
@@ -104,9 +134,11 @@ public class TrainerService {
     }
 
     public int getTrainerPositionById(Trainer trainer){
+
         int position = 0;
+
         for(int index = 0; index < trainerDAO.trainerDetails.size(); index++) {
-            if(trainer.getID().equals(trainerDAO.trainerDetails.get(index)
+            if(trainer.getID() == (trainerDAO.trainerDetails.get(index)
                                       .getID())) {
                 position = index;
             }
@@ -115,18 +147,21 @@ public class TrainerService {
     }
 
     public void updateTrainer(Trainer trainer) {
+
         int position = getTrainerPositionById(trainer);
         trainerDAO.updateTrainerDetails(position, trainer);
     }
 
     public void deleteAllTrainer() {
+
         trainerDAO.deleteAllTrainerDetails();
     }
 
-    public void deleteTrainerById(String trainerId) {
+    public void deleteTrainerById(int trainerId) {
+
         for(int index = 0; index < trainerDAO.trainerDetails.size(); index++) {
             if (trainerDAO.trainerDetails.get(index).getID()
-                 .equals(trainerId)) {
+                 == trainerId) {
                 trainerDAO.deleteTrainerById(index);
             }
         }

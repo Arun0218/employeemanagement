@@ -1,13 +1,15 @@
 package com.ideas2it.EmployeeDataManagment.controller;
 
 import com.ideas2it.EmployeeDataManagment.exception.CustomException;
-import com.ideas2it.EmployeeDataManagment.dao.TraineeDAO;
-import com.ideas2it.EmployeeDataManagment.dao.TrainerDAO;
 import com.ideas2it.EmployeeDataManagment.model.Trainee;
 import com.ideas2it.EmployeeDataManagment.model.Trainer;
 import com.ideas2it.EmployeeDataManagment.service.TraineeService;
 import com.ideas2it.EmployeeDataManagment.service.TrainerService;
 import com.ideas2it.EmployeeDataManagment.util.ValidationUtil;
+
+import java.time.format.DateTimeParseException;
+import java.time.LocalDate;
+import java.time.Period;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -92,14 +94,14 @@ public class EmployeeDataController {
     }
 
 
-    public String getID() throws CustomException.InvalidInputException,
+    public int getID() throws CustomException.InvalidInputException,
                  CustomException.ValueExistException {
         boolean isValid = true;
-        String employeeId;
+        int employeeId;
 
         do {
             logger.info("Enter your Employee ID: ");
-            employeeId = scanner.nextLine();
+            employeeId = isValidEmployeeId();
             if(ValidationUtil.isValidDetail(ValidationUtil.employeeId, employeeId)) {
                 if(traineeService.isPhoneNumberAlreadyExist(employeeId) &&
                     trainerService.isPhoneNumberAlreadyExist(employeeId)) {
@@ -123,6 +125,23 @@ public class EmployeeDataController {
         return employeeId;
     }
 
+    public int isValidEmployeeId() {
+        boolean isValid = true;
+        int id = 0;
+
+        do {
+            try {
+                id = Integer.parseInt(scanner.nextLine());
+                isValid = false;
+            } catch(NumberFormatException exception) {
+                logger.error("Enter the Valid EmployeeID----");
+                logger.error("Enter EmployeeID in Numbers only----");
+                isValid = true;
+            }
+        } while(isValid);
+    return id;
+    }
+
     public String getName() throws CustomException.InvalidInputException {
         boolean isValid = true;
         String name;
@@ -134,8 +153,8 @@ public class EmployeeDataController {
                 isValid = false;
             } else {
                 try {
-                    throw new CustomException.InvalidInputException("In-valid Entry,"
-                                                    + "Enter the Valid Name");
+                    throw new CustomException.InvalidInputException("In-valid"
+                                              + "Entry, Enter the Valid Name");
                 } catch(CustomException.InvalidInputException error) {
                    logger.error(error);
                 }
@@ -144,15 +163,18 @@ public class EmployeeDataController {
         return name;
     }
 
-    public String getPhoneNumber() throws CustomException.InvalidInputException,
+    public long getPhoneNumber() throws CustomException.InvalidInputException,
                  CustomException.ValueExistException {
         boolean isValid = true;
-        String phoneNumber;
+        long phoneNumber;
 
         do {
+            logger.info("Notes: Number Should only in 10 digits***");
             logger.info("Enter your PhoneNumber: ");
-            phoneNumber = scanner.nextLine();
-                if (ValidationUtil.isValidDetail(ValidationUtil.phoneNumberPattern, phoneNumber)) {
+            phoneNumber = isValidPhoneNumber();
+                if (ValidationUtil.isValidDetail(ValidationUtil
+                                                 .phoneNumberPattern,
+                                                 phoneNumber)) {
                     if(traineeService.isPhoneNumberAlreadyExist(phoneNumber) &&
                        trainerService.isPhoneNumberAlreadyExist(phoneNumber)) {
                         isValid = false;
@@ -176,6 +198,23 @@ public class EmployeeDataController {
         return phoneNumber;
     }
 
+    public long isValidPhoneNumber() {
+        boolean isValid = true;
+        long phoneNumber = 0;
+
+        do {
+            try {
+                phoneNumber = Long.parseLong(scanner.nextLine());
+                isValid = false;
+            } catch(NumberFormatException exception) {
+                logger.error("Enter the Valid Phone Number----");
+                logger.error("Enter Phone Number in Numbers only----");
+                isValid = true;
+            }
+        } while(isValid);
+    return phoneNumber;
+    }
+
     public String getEmail() throws CustomException.InvalidInputException,
                  CustomException.ValueExistException {
         boolean isValid = true;
@@ -185,8 +224,8 @@ public class EmployeeDataController {
             logger.info("Enter your Mail: ");
             email = scanner.nextLine();
             if(ValidationUtil.isValidDetail(ValidationUtil.emailPattern, email)) {
-                if(traineeService.isPhoneNumberAlreadyExist(email) &&
-                    trainerService.isPhoneNumberAlreadyExist(email)) {
+                if(traineeService.isEmailAlreadyExist(email) &&
+                    trainerService.isEmailAlreadyExist(email)) {
                     isValid = false;
                 } else {
                     try {
@@ -209,7 +248,7 @@ public class EmployeeDataController {
 
     public String getBloodGroup() throws CustomException.InvalidInputException,
                  CustomException.ValueExistException {
-        boolean exit = true;
+        boolean isValid = true;
         String bloodGroup;
 
         do {
@@ -217,7 +256,7 @@ public class EmployeeDataController {
             bloodGroup = scanner.nextLine();
             if(ValidationUtil.isValidDetail(ValidationUtil.bloodGroupPattern,
                                             bloodGroup)) {
-                exit = false;
+                isValid = false;
             } else {
                 try {
                     throw new CustomException.InvalidInputException("In-valid Entry,"
@@ -226,8 +265,114 @@ public class EmployeeDataController {
                     logger.error(error);
                 }
             }
-        } while (exit);
+        } while (isValid);
         return bloodGroup;
+    }
+
+    public LocalDate getTrainerDateOfBirth() throws CustomException.InvalidInputException {
+        boolean isValid = true;
+        LocalDate dateOfBirth;
+
+        do {
+            logger.info("Enter the Date of Birth in YYYY-MM-DD fromat: ");
+            String birthDay = scanner.nextLine();
+            dateOfBirth = getDateOfBirth(birthDay);
+            if(dateOfBirth != null) {
+                if(trainerService.isValidDateOfBirth(dateOfBirth)) {
+                    isValid = false;
+                } else {
+                    try {
+                        throw new CustomException.InvalidInputException("Not"
+                                             + "Eligible. Enter a valid Year");
+                    } catch (CustomException.InvalidInputException error) {
+                        logger.error(error);
+                    }
+                }
+            } else {
+                isValid = true;
+            }
+        } while(isValid);
+        return dateOfBirth;
+    }
+
+    public LocalDate getTraineeDateOfBirth() throws CustomException.InvalidInputException {
+        boolean isValid = true;
+        LocalDate dateOfBirth;
+
+        do {
+            logger.info("Enter the Date of Birth in YYYY-MM-DD fromat: ");
+            String birthDay = scanner.nextLine();
+            dateOfBirth = getDateOfBirth(birthDay);
+            if(dateOfBirth != null) {
+                if(traineeService.isValidDateOfBirth(dateOfBirth)) {
+                    isValid = false;
+                } else {
+                    try {
+                        throw new CustomException.InvalidInputException("Not"
+                                             + "Eligible. Enter a valid Year");
+                    } catch (CustomException.InvalidInputException error) {
+                        logger.error(error);
+                    }
+                }
+            } else {
+                isValid = true;
+            }
+        } while(isValid);
+        return dateOfBirth;
+    }
+
+
+    public LocalDate getDateOfBirth(String birthDay) {
+
+        LocalDate dateOfBirth = null;
+
+        try {
+            dateOfBirth = LocalDate.parse(birthDay);
+        } catch (DateTimeParseException dateException) {
+            logger.error("Enter a Valid Date in YYYY-MM-DD Format");
+        }
+        return dateOfBirth;
+    }
+
+    public float getExperience() throws CustomException.InvalidInputException {
+        boolean isValid = true;
+        float experience;
+
+        do {
+            logger.info("Enter your Experience: ");
+            experience = isValidExperience();
+            if(ValidationUtil.isValidDetail(ValidationUtil.experience,
+                                            experience)) {
+                isValid = false;
+            } else {
+                try {
+                    throw new CustomException.InvalidInputException("In-valid Entry,"
+                                                    + "Experience Must"
+                                                    + "be Higher than 2 yrs");
+                } catch (CustomException.InvalidInputException error) {
+                    logger.error(error);
+                }
+            }
+
+        } while(isValid);
+        return experience;
+    }
+
+    public float isValidExperience() {
+        boolean isValid = true;
+        float experience = 0;
+
+        do {
+            try {
+                experience = Float.parseFloat(scanner.nextLine());
+                isValid = false;
+            } catch(NumberFormatException exception) {
+                logger.error("Enter the Valid Experience----");
+                logger.error("Enter Experience in Numbers only----");
+                isValid = true;
+            }
+        } while(isValid);
+        return experience;
     }
 
     public void addDetails() {
@@ -261,8 +406,10 @@ public class EmployeeDataController {
         try {
             Trainer trainer = new Trainer(getID(), getName(),
                                           getPhoneNumber(), getEmail(),
-                                          getBloodGroup(),
-                                          assignTrainee());
+                                          getTrainerDateOfBirth(),
+                                          getExperience(),
+                                          getBloodGroup(), assignTrainee());
+            trainer.setAge(trainerService.getAge(trainer.getDateOfBirth()));
             trainerService.addTrainerDetail(trainer);
         } catch (CustomException.InvalidInputException error) {
             logger.error("In-valid Entry, Enter the Valid \n");
@@ -276,7 +423,9 @@ public class EmployeeDataController {
         try {
             Trainee trainee = new Trainee(getID(), getName(), 
                                           getPhoneNumber(), getEmail(),
+                                          getTraineeDateOfBirth(),
                                           getBloodGroup());
+            trainee.setAge(traineeService.getAge(trainee.getDateOfBirth()));
             traineeService.addTraineeDetail(trainee);
         } catch (CustomException.InvalidInputException error) {
             logger.error("In-valid Entry, Enter the Valid ");
@@ -286,45 +435,43 @@ public class EmployeeDataController {
     }
 
     public List<Trainee> assignTrainee() {
-        logger.info("Enter the Trainee ID: ");
-        String traineeId = scanner.nextLine();
-        List<Trainee> traineeList = new ArrayList<Trainee>();;
 
-        if (traineeService.checkTraineeById(traineeId)) {
-            trainee = traineeService.getTraineeDetailById(traineeId);
-        } else {
-            logger.info("No Details Found___");
-            do {
-                try {
-                    assignTraineeSelection();
-                    switch (select) {
-                        case 1:
-                            createNewTraineeDetail(traineeId);
+        List<Trainee> traineeList = new ArrayList<Trainee>();;
+        int traineeId = 0;
+
+        do {
+            try {
+                assignTraineeSelection();
+                switch (select) {
+                    case 1:
+                        logger.info("Create your Trainee Details");
+                        logger.info("Enter the Trainee ID: ");
+                        traineeId = isValidEmployeeId();
+                        createNewTraineeDetail(traineeId);
+                        traineeList.add(traineeService
+                                        .getTraineeDetailById(traineeId));
+                        break;
+
+                    case 2:
+                        if (traineeService.checkTraineeById(traineeId)) {
+                            logger.info("No Details Found___");
+                        } else {
                             traineeList.add(traineeService
                                             .getTraineeDetailById(traineeId));
-                            break;
+                        }
+                        break;
 
-                        case 2:
-                            if (traineeService.checkTraineeById(traineeId)) {
-                                logger.info("No Details Found___");
-                            } else {
-                                traineeList.add(traineeService
-                                                .getTraineeDetailById(traineeId));
-                            }
-                            break;
+                    case 3:
+                        logger.info("Assign Trainee Later");
+                        break;
 
-                        case 3:
-                            logger.info("Assign Trainee Later");
-                            break;
-
-                        default:
-                            warnMessage();
-                    }
-                } catch(NumberFormatException exception) {
-                    logger.error("Enter the Valid Selection ---");
+                    default:
+                        warnMessage();
                 }
-            } while(select != 3);
-        }
+            } catch(NumberFormatException exception) {
+                logger.error("Enter the Valid Selection ---");
+            }
+        } while(select != 3);
         return traineeList;
     }
 
@@ -337,14 +484,13 @@ public class EmployeeDataController {
         return select;
     }
 
-    public Trainee createNewTraineeDetail(String traineeId) {
+    public Trainee createNewTraineeDetail(int traineeId) {
         try {
-            logger.info("Create your Trainee Details");
-            logger.info("Enter the Trainee ID: ");
-            traineeId = scanner.nextLine();
             Trainee trainee = new Trainee(traineeId, getName(), 
                                           getPhoneNumber(), getEmail(),
+                                          getTraineeDateOfBirth(),
                                           getBloodGroup());
+            trainee.setAge(traineeService.getAge(trainee.getDateOfBirth()));
             traineeService.addTraineeDetail(trainee);
         } catch (CustomException.InvalidInputException error) {
             logger.error("In-valid Entry, Enter the Valid ");
@@ -385,60 +531,64 @@ public class EmployeeDataController {
                 default:
                     warnMessage();
             }
-        } while(select !=3);
+        } while(select != 3);
     }
 
     public int readOperation() {
-        logger.info("Trainer Details \3 ");
+
         logger.info("Select any one Operation by Numeric Pointers."
                            + "\n1. Read All. \n2. Read by ID."
-                           + "\n9. Back-to-Main-Menu. \n\t\t\t0-Exit. ");
+                           + "\n9. Back. \n\t\t\t0-Exit. ");
         int operation = operation();
         return operation;
     }
 
     public void readTraineeDetail() {
-        boolean entry = true;
-        select = operation();
-        switch(select) {
-            case 1:
-                String trainees = traineeService
-                                      .diplayAllTraineeDetails()
-                                          .toString();
-                logger.info(traineeService
-                                       .getTraineeDetails(trainees));
-                break;
 
-            case 2:
-                logger.info("Enter the Trainee ID: ");
-                String traineeId = scanner.nextLine();
-                if (traineeService.checkTraineeById(traineeId)) {
+        do {
+            select = readOperation();
+
+            switch(select) {
+                case 1:
+                    String trainees = traineeService
+                                          .diplayAllTraineeDetails()
+                                              .toString();
                     logger.info(traineeService
-                                  .getTraineeDetailById(traineeId));
-                } else {
-                    logger.info("Employee Not Fount,"
-                                       + "Enter valid ID");
-                }
-                break;
+                                           .getTraineeDetails(trainees));
+                    break;
 
-            case 9:
-                entry = false;
-                break;
+                case 2:
+                    logger.info("Enter the Trainee ID: ");
+                    int traineeId = isValidEmployeeId();
+                    if (traineeService.checkTraineeById(traineeId)) {
+                        logger.info(traineeService
+                                      .getTraineeDetailById(traineeId));
+                    } else {
+                        logger.info("Employee Not Fount,"
+                                           + "Enter valid ID");
+                    }
+                    break;
 
-            case 0:
-                System.exit(0);
-                break;
+                case 9:
+                    logger.info("Back");
+                    break;
 
-            default:
-                warnMessage();
-        }
+                case 0:
+                    System.exit(0);
+                    break;
+
+                default:
+                    warnMessage();
+            }
+        } while(select != 9);
     }
 
     public void readTrainerDetail() {
-        boolean entry = true;
 
-        while(entry) {
-            select = operation();
+        do {
+
+            select = readOperation();
+
             switch(select) {
                 case 1:
                     String trainers = trainerService
@@ -450,7 +600,7 @@ public class EmployeeDataController {
 
                 case 2:
                     logger.info("Enter the Trainer ID: ");
-                    String trainerId = scanner.nextLine();
+                    int trainerId = isValidEmployeeId();
                     if(trainerService.checkTrainerById(trainerId)) {
                         logger.info(trainerService
                                            .getTrainerDetailById(trainerId));
@@ -468,7 +618,7 @@ public class EmployeeDataController {
                     break;
 
                 case 9:
-                    entry = false;
+                    logger.info("Back-to-Main");
                     break;
 
                 case 0:
@@ -478,7 +628,7 @@ public class EmployeeDataController {
                 default:
                     warnMessage();
             }
-        }
+        } while(select != 9);
     }
 
 
@@ -511,18 +661,19 @@ public class EmployeeDataController {
     public int updateTraineeOperation() {
         logger.info("Enter The Field to Update: \n1-Name."
                             + "\n2-PhoneNumber. \n3-Email."
-                            + "\n4-BloodGroup. \n9-Back. \n0-Exit");
+                            + "\n4-BloodGroup. \n5-Date-of-Birth."
+                            + " \n9-Back. \n0-Exit");
         int operation = operation();
         return operation;
     }
 
     public Trainee updateTraineeDetail() {
-        boolean entry = true;
+
         logger.info("Enter the Trainee ID: ");
-        String traineeId = scanner.nextLine();
+        int traineeId = isValidEmployeeId();
         trainee = traineeService.getTraineeDetailById(traineeId);
 
-        while(entry) {
+        do {
             try {
                 select = updateTraineeOperation();
                 switch(select) {
@@ -532,7 +683,7 @@ public class EmployeeDataController {
                         break;
 
                     case 2:
-                        String phoneNumber = getPhoneNumber();
+                        long phoneNumber = getPhoneNumber();
                         trainee.setPhoneNumber(phoneNumber);
                         break;
 
@@ -546,8 +697,14 @@ public class EmployeeDataController {
                         trainee.setBloodGroup(bloodGroup);
                         break;
 
+                    case 5:
+                        LocalDate dateOfBirth = getDateOfBirth();
+                        trainee.setDateOfBirth(dateOfBirth);
+                        trainee.setAge(traineeService.getAge(trainee.getDateOfBirth()));
+                        break;
+
                     case 9:
-                        entry = false;
+                        logger.info("BACK");
                         break;
 
                     case 0:
@@ -562,26 +719,26 @@ public class EmployeeDataController {
             } catch (CustomException.ValueExistException error) {
                 logger.error("Phone Number Already Exist ");
             }
-        }        
+        } while(select != 9);
         return trainee;
     }
 
     public int updateTrainerOperation() {
         logger.info("Enter The Field to Update: \n1-Name."
                             + "\n2-PhoneNumber. \n3-Email."
-                            + "\n4-BloodGroup. \n5-Assign Trainee."
+                            + "\n4-BloodGroup. \n5-Date-of-Birth. 
+                            + "\n6-Experience. \n7-Assign Trainee."
                             + "\n9-Back. \n0-Exit");
         int operation = operation();
         return operation;
     }
 
     public Trainer updateTrainerDetail() {
-        boolean entry = true;
         logger.info("Enter the Trainer ID: ");
-        String trainerId = scanner.nextLine();
+        int trainerId = isValidEmployeeId();
         trainer = trainerService.getTrainerDetailById(trainerId);
 
-        while(entry) {
+        do {
             try {
                 select = updateTrainerOperation();
                 switch(select) {
@@ -591,7 +748,7 @@ public class EmployeeDataController {
                         break;
 
                     case 2:
-                        String phoneNumber = getPhoneNumber();
+                        long phoneNumber = getPhoneNumber();
                         trainer.setPhoneNumber(phoneNumber);
                         break;
 
@@ -606,11 +763,22 @@ public class EmployeeDataController {
                         break;
 
                     case 5:
+                        LocalDate dateOfBirth = getDateOfBirth();
+                        trainee.setDateOfBirth(dateOfBirth);
+                        trainee.setAge(traineeService.getAge(trainee.getDateOfBirth()));
+                        break;
+
+                    case 6:
+                        float experience = getExperience();
+                        trainer.setExperience(experience);
+                        break;
+
+                    case 7:
                         assignTrainee();
                         break;
 
                     case 9:
-                        entry = false;
+                        logger.info("Back");
                         break;
 
                     case 0:
@@ -625,7 +793,7 @@ public class EmployeeDataController {
             } catch (CustomException.ValueExistException error) {
                 logger.error("Phone Number Already Exist ");
             }
-        }
+        } while (select != 9);
         return trainer;
     }
 
@@ -670,7 +838,7 @@ public class EmployeeDataController {
 
                 case 2:
                     logger.info("Enter the Trainer ID: ");
-                    String trainerId = scanner.nextLine();
+                    int trainerId = isValidEmployeeId();
                     trainerService.deleteTrainerById(trainerId);
                     break;
 
@@ -700,7 +868,7 @@ public class EmployeeDataController {
 
                 case 2:
                     logger.info("Enter Ther Trainee ID: ");
-                    String traineeId = scanner.nextLine();
+                    int traineeId = isValidEmployeeId();
                     traineeService.deleteTraineeById(traineeId);
                     break;
 

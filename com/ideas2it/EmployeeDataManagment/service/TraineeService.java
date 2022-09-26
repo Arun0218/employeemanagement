@@ -3,6 +3,9 @@ package com.ideas2it.EmployeeDataManagment.service;
 import com.ideas2it.EmployeeDataManagment.dao.TraineeDAO;
 import com.ideas2it.EmployeeDataManagment.model.Trainee;
 
+import java.time.format.DateTimeParseException;
+import java.time.LocalDate;
+import java.time.Period;
 import java.util.List;
 
 public class TraineeService {
@@ -14,24 +17,22 @@ public class TraineeService {
         return traineeDAO.traineeDetails.isEmpty();
     }
 
-    public boolean isPhoneNumberAlreadyExist(String phoneNumber) {
+    public boolean isPhoneNumberAlreadyExist(long phoneNumber) {
 
         boolean isExist = true;
         for(int index = 0; index < traineeDAO.traineeDetails.size(); index++) {
-            if(traineeDAO.traineeDetails.get(index).getPhoneNumber()
-                   .equals(phoneNumber)) {
+            if(traineeDAO.traineeDetails.get(index).getPhoneNumber() == phoneNumber) {
                 isExist = false;
             }
         }
         return isExist;
     }
 
-    public boolean isEmployeeIdAlreadyExist(String employeeId) {
+    public boolean isEmployeeIdAlreadyExist(int employeeId) {
 
         boolean isExist = true;
         for(int index = 0; index < traineeDAO.traineeDetails.size(); index++) {
-            if(traineeDAO.traineeDetails.get(index).getID()
-                   .equals(employeeId)) {
+            if(traineeDAO.traineeDetails.get(index).getID() == employeeId) {
                 isExist = false;
             }
         }
@@ -50,6 +51,29 @@ public class TraineeService {
         return isExist;
     }
 
+    public boolean isValidDateOfBirth(LocalDate dateOfBirth) {
+
+        int age;
+        boolean isValid = false;
+
+        age = getAge(dateOfBirth);
+        if((age > 18) && (age < 60)) {
+            isValid = true;
+        }
+        return isValid;
+    }
+
+    public int getAge(LocalDate dateOfBirth) {
+
+        int age = 0;
+
+        LocalDate currentDate = LocalDate.now();
+        if((dateOfBirth != null) && (currentDate != null)) {
+            age = Period.between(dateOfBirth, currentDate).getYears();
+        }
+        return age;
+    }
+
     public void addTraineeDetail(Trainee trainee) {
 
         traineeDAO.addTraineeDetails(trainee);
@@ -60,12 +84,12 @@ public class TraineeService {
         return traineeDAO.diplayAllTraineeDetails();
     }    
 
-    public boolean checkTraineeById(String traineeId) {
+    public boolean checkTraineeById(int traineeId) {
 
         boolean isValid = false;
 
         for(int index = 0; index < traineeDAO.traineeDetails.size(); index++) {
-            if(traineeDAO.traineeDetails.get(index).getID().equals(traineeId)) {
+            if(traineeDAO.traineeDetails.get(index).getID() == traineeId) {
                 isValid = true;
             }
         }
@@ -80,12 +104,12 @@ public class TraineeService {
         return trainees;
     }
 
-    public Trainee getTraineeDetailById(String traineeId) {
+    public Trainee getTraineeDetailById(int traineeId) {
+
         Trainee trainee = new Trainee();
 
         for(int index = 0; index < traineeDAO.traineeDetails.size(); index++) {
-            if (traineeDAO.traineeDetails.get(index).getID()
-                .equals(traineeId)) {
+            if (traineeDAO.traineeDetails.get(index).getID() == traineeId) {
                 trainee = traineeDAO.getTraineeDetailById(index);
             }
         }
@@ -93,10 +117,12 @@ public class TraineeService {
     }
 
     public int getTraineePositionById(Trainee trainee) {
+
         int position = 0;
+
         for(int index = 0; index < traineeDAO.traineeDetails.size(); index++) {
-            if (trainee.getID().equals(traineeDAO.traineeDetails.get(index)
-                                       .getID())) {
+            if (trainee.getID() == traineeDAO.traineeDetails.get(index)
+                                       .getID()) {
                 position = index;
             }
         }
@@ -104,18 +130,21 @@ public class TraineeService {
     }
 
     public void updateTrainee(Trainee trainee) {
+
         int position = getTraineePositionById(trainee);
         traineeDAO.updateTraineeDetails(position, trainee);
     }
 
     public void deleteAllTrainee() {
+
         traineeDAO.deleteAllTraineeDetails();
     }
 
-    public void deleteTraineeById(String traineeId) {
+    public void deleteTraineeById(int traineeId) {
+
         for(int index = 0; index < traineeDAO.traineeDetails.size(); index++) {
             if (traineeDAO.traineeDetails.get(index).getID()
-                .equals(traineeId)) {
+                == traineeId) {
                 traineeDAO.deleteTraineeById(index);
             }
         }
