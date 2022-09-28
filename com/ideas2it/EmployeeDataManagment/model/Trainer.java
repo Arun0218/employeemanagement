@@ -23,8 +23,7 @@ public class Trainer {
 
     public Trainer(int id, String name,long phoneNumber,
                    String email,LocalDate dateOfBirth,
-                   float experience, String bloodGroup,
-                   List<Trainee> trainee) {
+                   float experience, String bloodGroup) {
     this.id = id;
     this.name = name;
     this.phoneNumber = phoneNumber;
@@ -32,7 +31,6 @@ public class Trainer {
     this.experience = experience;
     this.dateOfBirth = dateOfBirth;
     this.bloodGroup = bloodGroup;
-    this.trainee = trainee;
     }
 
     public int getID() {
@@ -59,11 +57,11 @@ public class Trainer {
         this.phoneNumber = phoneNumber;
     }
 
-    public float getexperience() {
+    public float getExperience() {
         return experience;
     }
 
-    public void setexperience(float experience) {
+    public void setExperience(float experience) {
         this.experience = experience;
     }
 
