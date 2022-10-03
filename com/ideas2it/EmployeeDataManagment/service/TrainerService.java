@@ -12,44 +12,43 @@ import java.time.Period;
 import java.util.List;
 
 public class TrainerService {
-
     TrainerDAO trainerDAO = new TrainerDAO();
 
+    public List<Trainer> getAllTrainerDetails() {
+        return trainerDAO.getAllTrainerDetails();
+    }    
+
     public boolean isTrainerListIsEmpty() {
-
-        return trainerDAO.trainerDetails.isEmpty();
+        return getAllTrainerDetails().isEmpty();
     }
 
-    public boolean isPhoneNumberAlreadyExist(long phoneNumber) {
-
+    public boolean isPhoneNumberExist(long phoneNumber) {
         boolean isExist = true;
-        for(int index = 0; index < trainerDAO.trainerDetails.size(); index++) {
-            if(trainerDAO.trainerDetails.get(index).getPhoneNumber()
-                   == phoneNumber) {
+
+        for(Trainer trainerlist : getAllTrainerDetails()) {
+            if(trainerlist.getPhoneNumber() == phoneNumber) {
                 isExist = false;
             }
         }
         return isExist;
     }
 
-    public boolean isEmployeeIdAlreadyExist(int employeeId) {
-
+    public boolean isEmployeeIdExist(int employeeId) {
         boolean isExist = true;
-        for(int index = 0; index < trainerDAO.trainerDetails.size(); index++) {
-            if(trainerDAO.trainerDetails.get(index).getID()
-                   == employeeId) {
+
+        for(Trainer trainerlist : getAllTrainerDetails()) {
+            if(trainerlist.getID() == employeeId) {
                 isExist = false;
             }
         }
         return isExist;
     }
 
-    public boolean isEmailAlreadyExist(String email) {
-
+    public boolean isEmailExist(String email) {
         boolean isExist = true;
-        for(int index = 0; index < trainerDAO.trainerDetails.size(); index++) {
-            if(trainerDAO.trainerDetails.get(index).getEmail()
-                   .equals(email)) {
+
+        for(Trainer trainerlist : getAllTrainerDetails()) {
+            if(trainerlist.getEmail().equals(email)) {
                 isExist = false;
             }
         }
@@ -57,7 +56,6 @@ public class TrainerService {
     }
 
     public boolean isValidDateOfBirth(LocalDate dateOfBirth) {
-
         int age;
         boolean isValid = false;
 
@@ -71,9 +69,7 @@ public class TrainerService {
         }
         return isValid;
     }
-
     public int getAge(LocalDate dateOfBirth) {
-
         int age = 0;
         LocalDate currentDate = LocalDate.now();
         if((dateOfBirth != null) && (currentDate != null)) {
@@ -83,22 +79,14 @@ public class TrainerService {
     }
 
     public void addTrainerDetail(Trainer trainer) {
-
         trainerDAO.addTrainerDetails(trainer);
     }
 
-    public List<Trainer> diplayAllTrainerDetails() {
-
-        return trainerDAO.diplayAllTrainerDetails();
-    }    
-
     public boolean checkTrainerById(int trainerId) {
-
         boolean isValid = false;
 
-        for(int index = 0; index < trainerDAO.trainerDetails.size(); index++) {
-            if (trainerDAO.trainerDetails.get(index).getID()
-                == trainerId) {
+        for(Trainer trainerlist : getAllTrainerDetails()) {
+            if (trainerlist.getID() == trainerId) {
                 isValid = true;
             }
         }
@@ -106,40 +94,33 @@ public class TrainerService {
     }
 
     public String getTraineeDetails(String trainees) {
-
         trainees = trainees.substring(1, trainees.length()-1);
         trainees = trainees.replace(',', ' ');
-
         return trainees;
     }
 
     public Trainer getTrainerDetailById(int trainerId) {
-
         Trainer trainer = new Trainer();
 
-        for(int index = 0; index < trainerDAO.trainerDetails.size(); index++) {
-            if(trainerDAO.trainerDetails.get(index).getID()
-               == trainerId) {
-                trainer = trainerDAO.trainerDetails.get(index);
+        for(int index = 0; index < getAllTrainerDetails().size(); index++) {
+            if(getAllTrainerDetails().get(index).getID() == trainerId) {
+                trainer = getAllTrainerDetails().get(index);
             }
         }
         return trainer;
     }
 
     public String getTrainerDetails(String trainers) {
-
         trainers = trainers.substring(1, trainers.length()-1);
         trainers = trainers.replace(',', ' ');
-
         return trainers;
     }
 
     public int getTrainerPositionById(Trainer trainer){
-
         int position = 0;
 
-        for(int index = 0; index < trainerDAO.trainerDetails.size(); index++) {
-            if(trainer.getID() == (trainerDAO.trainerDetails.get(index)
+        for(int index = 0; index < getAllTrainerDetails().size(); index++) {
+            if(trainer.getID() == (getAllTrainerDetails().get(index)
                                       .getID())) {
                 position = index;
             }
@@ -148,21 +129,19 @@ public class TrainerService {
     }
 
     public void updateTrainer(Trainer trainer) {
-
         int position = getTrainerPositionById(trainer);
+
         trainerDAO.updateTrainerDetails(position, trainer);
     }
 
     public void deleteAllTrainer() {
-
         trainerDAO.deleteAllTrainerDetails();
     }
 
     public void deleteTrainerById(int trainerId) {
 
-        for(int index = 0; index < trainerDAO.trainerDetails.size(); index++) {
-            if (trainerDAO.trainerDetails.get(index).getID()
-                 == trainerId) {
+        for(int index = 0; index < getAllTrainerDetails().size(); index++) {
+            if (getAllTrainerDetails().get(index).getID() == trainerId) {
                 trainerDAO.deleteTrainerById(index);
             }
         }

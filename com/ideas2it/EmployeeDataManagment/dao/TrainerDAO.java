@@ -14,7 +14,7 @@ public class TrainerDAO {
         trainerDetails.add(trainer);
     }
 
-    public List<Trainer> diplayAllTrainerDetails() {
+    public List<Trainer> getAllTrainerDetails() {
 
         return trainerDetails;
     }

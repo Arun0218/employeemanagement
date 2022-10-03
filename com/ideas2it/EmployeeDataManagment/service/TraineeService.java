@@ -6,45 +6,46 @@ import com.ideas2it.EmployeeDataManagment.model.Trainee;
 import java.time.format.DateTimeParseException;
 import java.time.LocalDate;
 import java.time.Period;
-
 import java.util.List;
 
 public class TraineeService {
-
     TraineeDAO traineeDAO = new TraineeDAO();
 
+    public List<Trainee> getAllTraineeDetails() {
+        return traineeDAO.getAllTraineeDetails();
+    }    
+
     public boolean isTraineeListIsEmpty() {
-
-        return traineeDAO.traineeDetails.isEmpty();
+        return getAllTraineeDetails().isEmpty();
     }
 
-    public boolean isPhoneNumberAlreadyExist(long phoneNumber) {
-
+    public boolean isPhoneNumberExist(long phoneNumber) {
         boolean isExist = true;
-        for(int index = 0; index < traineeDAO.traineeDetails.size(); index++) {
-            if(traineeDAO.traineeDetails.get(index).getPhoneNumber() == phoneNumber) {
+
+        for(Trainee traineelist : getAllTraineeDetails()) {
+            if(traineelist.getPhoneNumber() == phoneNumber) {
                 isExist = false;
             }
         }
         return isExist;
     }
 
-    public boolean isEmployeeIdAlreadyExist(int employeeId) {
-
+    public boolean isEmployeeIdExist(int employeeId) {
         boolean isExist = true;
-        for(int index = 0; index < traineeDAO.traineeDetails.size(); index++) {
-            if(traineeDAO.traineeDetails.get(index).getID() == employeeId) {
+
+        for(Trainee traineelist : getAllTraineeDetails()) {
+            if(traineelist.getID() == employeeId) {
                 isExist = false;
             }
         }
         return isExist;
     }
 
-    public boolean isEmailAlreadyExist(String email) {
-
+    public boolean isEmailExist(String email) {
         boolean isExist = true;
-        for(int index = 0; index < traineeDAO.traineeDetails.size(); index++) {
-            if(traineeDAO.traineeDetails.get(index).getEmail()
+
+        for(Trainee traineelist : getAllTraineeDetails()) {
+            if(traineelist.getEmail()
                    .equals(email)) {
                 isExist = false;
             }
@@ -53,7 +54,6 @@ public class TraineeService {
     }
 
     public boolean isValidDateOfBirth(LocalDate dateOfBirth) {
-
         int age;
         boolean isValid = false;
 
@@ -65,32 +65,24 @@ public class TraineeService {
     }
 
     public int getAge(LocalDate dateOfBirth) {
-
         int age = 0;
 
         LocalDate currentDate = LocalDate.now();
-        if((dateOfBirth != null) && (currentDate != null)) {
+        if((dateOfBirth != null)) {
             age = Period.between(dateOfBirth, currentDate).getYears();
         }
         return age;
     }
 
     public void addTraineeDetail(Trainee trainee) {
-
         traineeDAO.addTraineeDetails(trainee);
     }
 
-    public List<Trainee> diplayAllTraineeDetails() {
-
-        return traineeDAO.diplayAllTraineeDetails();
-    }    
-
     public boolean checkTraineeById(int traineeId) {
-
         boolean isValid = false;
 
-        for(int index = 0; index < traineeDAO.traineeDetails.size(); index++) {
-            if(traineeDAO.traineeDetails.get(index).getID() == traineeId) {
+        for(Trainee traineelist : getAllTraineeDetails()) {
+            if(traineelist.getID() == traineeId) {
                 isValid = true;
             }
         }
@@ -98,19 +90,16 @@ public class TraineeService {
     }
 
     public String getTraineeDetails(String trainees) {
-
         trainees = trainees.substring(1, trainees.length()-1);
         trainees = trainees.replace(',', ' ');
-
         return trainees;
     }
 
     public Trainee getTraineeDetailById(int traineeId) {
-
         Trainee trainee = new Trainee();
 
-        for(int index = 0; index < traineeDAO.traineeDetails.size(); index++) {
-            if (traineeDAO.traineeDetails.get(index).getID() == traineeId) {
+        for(int index = 0; index < getAllTraineeDetails().size(); index++) {
+            if (getAllTraineeDetails().get(index).getID() == traineeId) {
                 trainee = traineeDAO.getTraineeDetailById(index);
             }
         }
@@ -118,11 +107,10 @@ public class TraineeService {
     }
 
     public int getTraineePositionById(Trainee trainee) {
-
         int position = 0;
 
-        for(int index = 0; index < traineeDAO.traineeDetails.size(); index++) {
-            if (trainee.getID() == traineeDAO.traineeDetails.get(index)
+        for(int index = 0; index < getAllTraineeDetails().size(); index++) {
+            if (trainee.getID() == getAllTraineeDetails().get(index)
                                        .getID()) {
                 position = index;
             }
@@ -131,24 +119,21 @@ public class TraineeService {
     }
 
     public void updateTrainee(Trainee trainee) {
-
         int position = getTraineePositionById(trainee);
+
         traineeDAO.updateTraineeDetails(position, trainee);
     }
 
     public void deleteAllTrainee() {
-
         traineeDAO.deleteAllTraineeDetails();
     }
 
     public void deleteTraineeById(int traineeId) {
 
-        for(int index = 0; index < traineeDAO.traineeDetails.size(); index++) {
-            if (traineeDAO.traineeDetails.get(index).getID()
-                == traineeId) {
+        for(int index = 0; index < getAllTraineeDetails().size(); index++) {
+            if (getAllTraineeDetails().get(index).getID() == traineeId) {
                 traineeDAO.deleteTraineeById(index);
             }
         }
     }
-
 }

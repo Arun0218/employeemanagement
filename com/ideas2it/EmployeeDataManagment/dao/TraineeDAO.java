@@ -13,7 +13,7 @@ public class TraineeDAO {
         traineeDetails.add(trainee);
     }
 
-    public List<Trainee> diplayAllTraineeDetails() {
+    public List<Trainee> getAllTraineeDetails() {
 
         return traineeDetails;
     }
